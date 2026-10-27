@@ -193,7 +193,7 @@ class MovimentacaoController {
       }
 
       const { placa, tipo, data_entrada, data_saida } = req.body;
-
+      //fazer validação quando data_saida nao for enviada 
       if (!placa || !tipo || !data_entrada) {
         let message =
           "Os campos placa, tipo, data de entrada são obrigatórios.";
@@ -292,6 +292,40 @@ class MovimentacaoController {
 
         veiculo_id = novoVeiculo.insertId;
       }
+
+      if (dataSaida === null) {
+        const outraMovimentacao =
+          await modelMovimentacao.findOutraMovimentacaoAberta(placa, id);
+
+        if (outraMovimentacao) {
+          let message = "Esse veículo ja possui uma movimentação em aberto.";
+          return res.status(409).json({ message });
+        }
+      }
+
+      let usuarioSaidaId = movimentacao.usuario_saida_id;
+      let origemSaida = movimentacao.origem_saida;
+
+      if (dataSaida === null) {
+        usuarioSaidaId = null;
+        origemSaida = null;
+      } else if (movimentacao.data_saida === null) {
+        usuarioSaidaId = req.user.id;
+        origemSaida = "MANUAL";
+      }
+
+      const result = await modelMovimentacao.updateMovimentacao(
+        id,
+        veiculo_id,
+        dataEntrada,
+        dataSaida,
+        usuarioSaidaId,
+        origemSaida,
+      );
+
+      return res.status(200).json({
+        message: "Movimentacão atualizada com sucesso.",
+      });
     } catch (error) {
       console.error(error);
       return res.status(500).json({

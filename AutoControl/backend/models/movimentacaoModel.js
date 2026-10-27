@@ -105,6 +105,33 @@ async function findMovimentacaoId(id) {
     throw error;
   }
 }
+
+//buscando outra movimentacao que ta aberta
+async function findOutraMovimentacaoAberta(placa, id) {
+  try {
+    
+    const sql = `
+        SELECT *
+      FROM movimentacoes
+      INNER JOIN veiculos
+        ON movimentacoes.veiculo_id = veiculos.id
+      WHERE veiculos.placa = ?
+        AND movimentacoes.data_saida IS NULL
+        AND movimentacoes.id <> ?
+      LIMIT 1;
+    `
+    const [dados]  = await conect.query(sql, [placa, id]);
+    return dados[0]
+    
+    
+  } catch (error) {
+     console.error(error);
+    throw error;
+  }
+  
+}
+
+
 //consulta sql para apagar a movimentação
 async function deleteMovimentacao(id) {
   try {
@@ -161,6 +188,7 @@ export default {
   registerEntrada,
   registerSaida,
   findMovimentacaoId,
+  findOutraMovimentacaoAberta,
   deleteMovimentacao,
-  updateMovimentacao,
+  updateMovimentacao, 
 };
