@@ -41,5 +41,6 @@ async function findUserEmail(email) {
     throw error;
   }
 }
+//fazer edite usuario e delete usuario
 
 export default { listUsers, registerUsers, findUserEmail };

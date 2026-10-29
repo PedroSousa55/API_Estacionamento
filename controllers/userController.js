@@ -30,6 +30,12 @@ ainda sem controller e model de registro para o front end
         let message = "Todos os campos são obrigatorios.";
         return res.status(400).json({ message });
       }
+      
+      if (tipo !== "ADM" && tipo !== "VIGIA") {
+        return res.status(400).json({
+          message: "Tipo de usuario inválido.",
+        });
+      }
 
       //condicional para ver se usuario ja existe
       const verificEmail = await modelUsers.findUserEmail(email);

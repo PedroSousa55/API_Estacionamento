@@ -109,7 +109,6 @@ async function findMovimentacaoId(id) {
 //buscando outra movimentacao que ta aberta
 async function findOutraMovimentacaoAberta(placa, id) {
   try {
-    
     const sql = `
         SELECT *
       FROM movimentacoes
@@ -119,28 +118,9 @@ async function findOutraMovimentacaoAberta(placa, id) {
         AND movimentacoes.data_saida IS NULL
         AND movimentacoes.id <> ?
       LIMIT 1;
-    `
-    const [dados]  = await conect.query(sql, [placa, id]);
-    return dados[0]
-    
-    
-  } catch (error) {
-     console.error(error);
-    throw error;
-  }
-  
-}
-
-
-//consulta sql para apagar a movimentação
-async function deleteMovimentacao(id) {
-  try {
-    const sql = `
-    DELETE FROM movimentacoes
-    WHERE id = ?;
     `;
-    const [dados] = await conect.query(sql, [id]);
-    return dados;
+    const [dados] = await conect.query(sql, [placa, id]);
+    return dados[0];
   } catch (error) {
     console.error(error);
     throw error;
@@ -182,6 +162,21 @@ async function updateMovimentacao(
   }
 }
 
+//consulta sql para apagar a movimentação
+async function deleteMovimentacao(id) {
+  try {
+    const sql = `
+    DELETE FROM movimentacoes
+    WHERE id = ?;
+    `;
+    const [dados] = await conect.query(sql, [id]);
+    return dados;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 export default {
   listMovimentacao,
   findMovimentacaoPlaca,
@@ -190,5 +185,5 @@ export default {
   findMovimentacaoId,
   findOutraMovimentacaoAberta,
   deleteMovimentacao,
-  updateMovimentacao, 
+  updateMovimentacao,
 };

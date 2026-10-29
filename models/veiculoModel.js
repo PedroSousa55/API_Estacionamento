@@ -41,4 +41,7 @@ async function findVeiculoPlaca(placa) {
   }
 }
 
+
+// fazer edit veiculo e delete veiculo
+
 export default { listVeiculos, veiculoRegister, findVeiculoPlaca };

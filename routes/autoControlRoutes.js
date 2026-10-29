@@ -15,22 +15,27 @@ router.post(
   authMiddleware,
   admMiddleware,
   UserController.userRegister,
-); //cadastrando usuario passando o tipo
+);
+//cadastrando usuario passando o tipo
 router.post("/usuario/login", UserController.userLogin); //login do usuario
 
 //rotas de veiculos
 router.post(
   "/veiculos/placa/register",
   authMiddleware,
-  admMiddleware,
   VeiculosController.registerVeiculo,
 );
-router.get("/veiculos", authMiddleware, VeiculosController.listVeiculos); // lista todos os veiculos
+
+// lista todos os veiculos
+router.get("/veiculos", authMiddleware, VeiculosController.listVeiculos);
+
+//busca pela placa
 router.get(
   "/veiculos/placa/:placa",
   authMiddleware,
   VeiculosController.findPlacaVeiculo,
 );
+
 
 //rota de movimentacao
 router.get(
@@ -40,15 +45,21 @@ router.get(
 );
 
 router.post(
-  "/movimentacao/entrada",
+  "/movimentacao/register/entrada",
   authMiddleware,
   MovimentacaoController.registerEntrada,
 );
 
 router.post(
-  "/movimentacao/saida",
+  "/movimentacao/register/saida",
   authMiddleware,
   MovimentacaoController.registerSaida,
+);
+
+router.post(
+  "/movimentacao/edit/:id",
+  authMiddleware,
+  MovimentacaoController.editMovimentacao,
 );
 
 router.delete(

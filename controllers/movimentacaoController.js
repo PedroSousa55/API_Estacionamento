@@ -193,7 +193,7 @@ class MovimentacaoController {
       }
 
       const { placa, tipo, data_entrada, data_saida } = req.body;
-      //fazer validação quando data_saida nao for enviada 
+      //fazer validação quando data_saida nao for enviada
       if (!placa || !tipo || !data_entrada) {
         let message =
           "Os campos placa, tipo, data de entrada são obrigatórios.";
@@ -234,41 +234,54 @@ class MovimentacaoController {
         return res.status(400).json({ message });
       }
 
-      //verificando se é uma data valida
+      //esse bloco faz a validação das datas
       const dataEntrada = new Date(data_entrada);
 
+      //verificação de data entrada se ela é valida ou não
       if (isNaN(dataEntrada.getTime())) {
         return res.status(400).json({
-          message: "Data de entrada invalida.",
+          message: "Data Entrada Invalida.",
         });
       }
 
+      //verificação de uma data futura se a data entrada nao é uma data futura
       if (dataEntrada > new Date()) {
         return res.status(400).json({
           message: "A data de entrada não pode ser futura.",
         });
       }
 
-      let dataSaida = null;
+      //verificação de data saida
+      const temDataSaida = Object.hasOwn(req.body, "data_saida");
 
-      if (data_saida !== null && data_saida !== undefined) {
-        dataSaida = new Date(data_saida);
+      let dataSaida = movimentacao.data_saida
+        ? new Date(movimentacao.data_saida)
+        : null;
 
+      if (temDataSaida) {
+        if (data_saida === null || data_saida === "") {
+          dataSaida = null;
+        } else {
+          dataSaida = new Date(data_saida);
+        }
+      }
+
+      if (dataSaida !== null) {
         if (isNaN(dataSaida.getTime())) {
           return res.status(400).json({
-            message: "Data de saida invalida.",
+            message: "Data saída inválida.",
           });
         }
 
         if (dataSaida > new Date()) {
           return res.status(400).json({
-            message: "A data de saida não pode ser futura.",
+            message: "A data saída não pode ser futura..",
           });
         }
 
         if (dataSaida < dataEntrada) {
           return res.status(400).json({
-            message: "A data de saída não pode ser anterior à entrada.",
+            message: "A data saída não pode ser inferior a data de entrada.",
           });
         }
       }
